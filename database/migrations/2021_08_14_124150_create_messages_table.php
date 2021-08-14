@@ -16,11 +16,13 @@ class CreateMessagesTable extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('room_id',false,true);
-            $table->integer('user_id')->references('id')->on('users');
+            $table->integer('user_id',false,true);
             $table->string('message');
             $table->timestamps();
 
-            $table->foreign('room_id')->references('id')->on('rooms');        });
+            $table->foreign('room_id')->references('id')->on('rooms');
+            $table->foreign('user_id')->references('id')->on('users');       
+        });
     }
 
     /**

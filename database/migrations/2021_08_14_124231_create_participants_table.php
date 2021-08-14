@@ -16,9 +16,11 @@ class CreateParticipantsTable extends Migration
         Schema::create('participants', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('room_id',false,true);
-            $table->integer('user_id')->references('id')->on('users');            $table->timestamps();
+            $table->integer('user_id',false,true);          
+            $table->timestamps();
 
             $table->foreign('room_id')->references('id')->on('rooms');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
