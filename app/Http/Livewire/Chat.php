@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Auth;
 class Chat extends Component
 {
     public $user;
-    public $messageText;
-    public $chatsWith;
+    public $message_text;
+    public $chat_with;
     public $room;
 
     public function mount(Room $room)
@@ -21,13 +21,13 @@ class Chat extends Component
 
         $this->room = $room;
         $this->user = Auth::user();
-        $this->chatsWith = $room->conversationRoom($this->user)->name;
+        $this->chat_with = $room->chatWith($this->user)->name;
     }
 
     public function render()
     {
         $messages = Message::with(relations: 'user')
-        ->where('room_id', '=', $this->room->getRoomId()->id)
+        ->where('room_id', '=', $this->room->chatRoom()->id)
         ->latest()
         ->take(value: 10)
         ->get()
@@ -36,18 +36,18 @@ class Chat extends Component
         return view('livewire.chat' , compact(var_name:'messages'));
     }
 
-    public function sendMessage(Room $room)
+    public function sendMessage()
     {
         //DB::insert('insert into messages (id, name) values (?, ?)', [1, 'Dayle'])
         Message::create([
-            'room_id' => $room->getConversationWith()->id,
+            'room_id' => $this->room->chatRoom()->id,
             'user_id' => $this->user->id,
-            'message' => $this->messageText,
+            'message' => $this->message_text,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
 
-        $this->reset('messageText');
+        $this->reset('message_text');
     }
 
 }

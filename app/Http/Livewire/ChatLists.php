@@ -16,7 +16,7 @@ class ChatLists extends Component
 
     public function mount(Room $room)
     {
-        $this->roomWith = $room->getRoomWith();
+        $this->roomWith = $room->roomsList();
     }
 
     public function render()

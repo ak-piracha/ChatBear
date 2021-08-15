@@ -28,37 +28,32 @@ class Room extends Model
     {
         return $this->belongsTo(RoomType::class);
     }
-    public function getRoomId()
-    {
-        $id = Auth::user()->id == 3 ? 2 : 1;
 
-        return Room::where( 'id' , '=' ,$id )->first();
-    }
-
-    public function getRoomWith()
+    public function roomsList()
     {   
-         $roomWith = Room::where('user_b_id', '=', Auth::user()->id)
+         $rooms_list = Room::where('user_b_id', '=', Auth::user()->id)
             ->orWhere('user_a_id', '=', Auth::user()->id)
             ->get();
         
-            return $roomWith;
+            return $rooms_list;
     }
 
-    public function getConversationWith()
+    public function chatRoom()
     {   
-         $roomWith = Room::where('user_b_id', '=', Auth::user()->id)
+         $chat_room = Room::where('user_b_id', '=', Auth::user()->id)
             ->orWhere('user_a_id', '=', Auth::user()->id)
             ->first();
         
-            return $roomWith;
+            return $chat_room;
     }
-    public function conversationRoom(User $user)
-    {   
-        $roomWith = $this->getConversationWith();
 
-         $conversationWith = $roomWith->user_a_id == $user->id ? $roomWith->user_b_id : $roomWith->user_a_id ;
-         $conversationWith = User::find($conversationWith);
-            return $conversationWith;
+    public function chatWith(User $user)
+    {   
+        $chat_with = $this->chatRoom();
+
+         $conversation_with = $chat_with->user_a_id == $user->id ? $chat_with->user_b_id : $chat_with->user_a_id ;
+         $conversation_with = User::find($conversation_with);
+            return $conversation_with;
     }
     
 }

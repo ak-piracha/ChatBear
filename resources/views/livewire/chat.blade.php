@@ -3,15 +3,19 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
+                <div class="p-6 bg-white border-b border-gray-200" style="background-color:rgb(197, 197, 197)">
                   
-                    <h1>{{$chatsWith}}</h1>
+                    <h1 style="text-align:center;">{{$chat_with}}</h1>
                         
                     </div>
                     <div class="p-6 bg-white border-b border-gray-200" >
                         @forelse( $messages as $message)
                         <div class="p-6 bg-white border-b border-gray-200">
-                        {{ $message->user->name}} : {{ $message->message}}
+
+                            <label style="color:blue; font-family:verdana" for="user_name">{{ $message->user->name}}</label>  
+
+                            <label style="color:black;" for="user_name">{{ $message->message}}</label>   
+
                             <br/>
                         </div>
                         @empty
@@ -19,10 +23,9 @@
                         @endforelse
                        
                         </div>
-                        <div class="p-6 bg-white border-b border-gray-200" >
+                        <div class="p-6 bg-white border-b border-gray-200" style="background-color:rgb(197, 197, 197)">
                             <form wire:submit.prevent="sendMessage">
-                            <input wire:model.defer="messageText" type="text" id="msg_id" name="msg" placeholder="Enter your message here..."  style="height:50px; width:95%; background-color: rgb(209, 217, 218)">
-                            <input type="submit" value="Submit"><br><br>
+                            <input wire:model.defer="message_text" type="text" id="msg_id" name="msg" placeholder="Enter your message here..."  style="width:100%; background-color:white">
                         </form> 
                             </div>
                 </div>
