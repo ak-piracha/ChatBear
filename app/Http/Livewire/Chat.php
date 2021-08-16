@@ -57,23 +57,18 @@ class Chat extends Component
 
     function sendNotification($user, $msg){
     
-        $title = array(
-            "en" => 'Chat Bear'
-            );
-        
         $send_from = array(
-            "en" => $user
+            "en" => 'Chat Bear  :  ' . $user
             );
           
         $message = array(
-            "en" => $msg
+            "en" => 'Message  :  ' . $msg
             );    
         
         $fields = array(
             'app_id' => "5a50b1f0-8f3c-4a23-8845-569719f996c6",
             'include_player_ids' => array("4fc1ced3-2c79-45d8-b479-6aedd81a4ead","263ab464-39e1-4972-ad96-e02ba3e886d9"),
             
-            'title' => $title,
             'headings' => $send_from,
             'contents' => $message,
             
