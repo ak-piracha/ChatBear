@@ -16,6 +16,7 @@ class Chat extends Component
     public $chat_room;
     public $message_text;
     public $room;
+    public $response;
 
     public function mount($id)
     {
@@ -48,7 +49,53 @@ class Chat extends Component
             'updated_at' => Carbon::now(),
         ]);
 
-        $this->reset('message_text');
+        $this->response = $this->sendNotification($this->second_user->name, $this->message_text);
+    
+        
+        $this->reset('message_text'); 
+    }
+
+    function sendNotification($user, $msg){
+    
+        $title = array(
+            "en" => 'Chat Bear'
+            );
+        
+        $send_from = array(
+            "en" => $user
+            );
+          
+        $message = array(
+            "en" => $msg
+            );    
+        
+        $fields = array(
+            'app_id' => "5a50b1f0-8f3c-4a23-8845-569719f996c6",
+            'include_player_ids' => array("4fc1ced3-2c79-45d8-b479-6aedd81a4ead","263ab464-39e1-4972-ad96-e02ba3e886d9"),
+            
+            'title' => $title,
+            'headings' => $send_from,
+            'contents' => $message,
+            
+            'url'      => 'http://chatbear.test/chatroom/'
+        );
+        
+        $fields = json_encode($fields);
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://onesignal.com/api/v1/notifications");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json; charset=utf-8',
+                                                    'Authorization: Basic YTM3Y2QxZjAtMjczYS00MWQ1LTk1MTAtMjEwOTBmMjQ4Nzc2'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_HEADER, FALSE);
+        curl_setopt($ch, CURLOPT_POST, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+        
+        return $response;
     }
 
 }
