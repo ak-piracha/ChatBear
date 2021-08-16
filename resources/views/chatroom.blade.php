@@ -27,7 +27,7 @@
 
             <!-- Page Content -->
             <main>
-                @livewire('chat', ['userId' => Auth::user()])
+                @livewire('chat', ['id' => $id, 'userId' => Auth::user()])
             </main>
         </div>
         @livewireScripts

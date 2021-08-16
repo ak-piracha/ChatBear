@@ -37,23 +37,14 @@ class Room extends Model
         
             return $rooms_list;
     }
-
-    public function chatRoom()
-    {   
-         $chat_room = Room::where('user_b_id', '=', Auth::user()->id)
-            ->orWhere('user_a_id', '=', Auth::user()->id)
-            ->first();
-        
-            return $chat_room;
-    }
-
-    public function chatWith(User $user)
-    {   
-        $chat_with = $this->chatRoom();
-
-         $conversation_with = $chat_with->user_a_id == $user->id ? $chat_with->user_b_id : $chat_with->user_a_id ;
-         $conversation_with = User::find($conversation_with);
-            return $conversation_with;
-    }
     
+    public function secondUser(Room $room)
+    {   
+        $user = Auth::user();
+
+        $second_user = $room->user_a_id == $user->id ? $room->user_b_id : $room->user_a_id ;
+        $second_user = User::find($second_user);
+           
+        return $second_user;
+    }
 }

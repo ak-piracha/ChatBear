@@ -21,8 +21,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('/chatroom', function () {
-    return view('chatroom');
+Route::get('/chatroom/{id}', function ($id) {
+    
+    return view('chatroom')->with(['id' => $id]);
 })->middleware(['auth'])->name('chatroom');
 
 Route::get('/chatlist', function () {

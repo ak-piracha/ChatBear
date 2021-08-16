@@ -6,7 +6,7 @@
  
                         @forelse( $rooms as $room)
                         <div class="p-6 bg-white border-b border-gray-200">
-                        {{ $room->name}} 
+                            <a href="/chatroom/{{ $room->id}}">{{ $room->name}} </a> 
                             <br/>
                         </div>
                         @empty

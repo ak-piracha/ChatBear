@@ -11,23 +11,25 @@ use Illuminate\Support\Facades\Auth;
 
 class Chat extends Component
 {
-    public $user;
+    public $first_user;
+    public $second_user;
+    public $chat_room;
     public $message_text;
-    public $chat_with;
     public $room;
 
-    public function mount(Room $room)
+    public function mount($id)
     {
+        $this->room = new Room();
 
-        $this->room = $room;
-        $this->user = Auth::user();
-        $this->chat_with = $room->chatWith($this->user)->name;
+        $this->chat_room = Room::find($id);
+        $this->first_user = Auth::user();
+        $this->second_user = $this->room->secondUser($this->chat_room);
     }
 
     public function render()
     {
         $messages = Message::with(relations: 'user')
-        ->where('room_id', '=', $this->room->chatRoom()->id)
+        ->where('room_id', '=', $this->chat_room->id)
         ->latest()
         ->take(value: 10)
         ->get()
@@ -38,10 +40,9 @@ class Chat extends Component
 
     public function sendMessage()
     {
-        //DB::insert('insert into messages (id, name) values (?, ?)', [1, 'Dayle'])
         Message::create([
-            'room_id' => $this->room->chatRoom()->id,
-            'user_id' => $this->user->id,
+            'room_id' => $this->chat_room->id,
+            'user_id' => $this->first_user->id,
             'message' => $this->message_text,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),

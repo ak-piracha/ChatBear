@@ -5,7 +5,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200" style="background-color:rgb(197, 197, 197)">
                   
-                    <h1 style="text-align:center;">{{$chat_with}}</h1>
+                    <h1 style="text-align:center;">{{$second_user->name}}</h1>
                         
                     </div>
                     <div class="p-6 bg-white border-b border-gray-200" >
