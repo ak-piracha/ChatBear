@@ -12,7 +12,7 @@
                         @forelse( $messages as $message)
                         <div class="p-6 bg-white border-b border-gray-200">
 
-                            <label style="color:blue; font-family:verdana" for="user_name">{{ $message->user->name}}</label>  
+                            <label style="color:rgb(25, 25, 95); font-family:verdana" for="user_name">{{ $message->user->name}}</label>  
 
                             <label style="color:black;" for="user_name">{{ $message->message}}</label>   
 
