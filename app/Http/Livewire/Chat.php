@@ -32,7 +32,6 @@ class Chat extends Component
         $messages = Message::with(relations: 'user')
         ->where('room_id', '=', $this->chat_room->id)
         ->latest()
-        ->take(value: 10)
         ->get()
         ->sortBy(callback: 'id');
         
