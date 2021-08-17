@@ -9,8 +9,6 @@ use Livewire\Component;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
 
-use function PHPUnit\Framework\isNull;
-
 class Chat extends Component
 {
     public $first_user;
