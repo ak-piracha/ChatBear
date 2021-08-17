@@ -8,7 +8,7 @@ use App\Models\Message;
 use Livewire\Component;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
-
+use Livewire\WithPagination;
 class Chat extends Component
 {
     public $first_user;
@@ -18,6 +18,7 @@ class Chat extends Component
     public $room;
     public $response;
 
+    use WithPagination;
     public function mount($id)
     {
         $this->room = new Room();
@@ -29,13 +30,12 @@ class Chat extends Component
 
     public function render()
     {
-        $messages = Message::with(relations: 'user')
-        ->where('room_id', '=', $this->chat_room->id)
-        ->latest()
-        ->get()
-        ->sortBy(callback: 'id');
-        
-        return view('livewire.chat' , compact(var_name:'messages'));
+        return view('livewire.chat', [
+            'messages' => Message::with(relations: 'user')
+            ->where('room_id', '=', $this->chat_room->id)
+            ->latest()
+            ->paginate(6)
+        ]);
     }
 
     public function sendMessage()

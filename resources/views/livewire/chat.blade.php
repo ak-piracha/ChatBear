@@ -21,7 +21,9 @@
                         @empty
                         No messages yet. Type one Below!
                         @endforelse
-                       
+                        <div class="p-6 bg-white border-b border-gray-200">
+                            {{ $messages->links() }}
+                            </div>
                         </div>
                         <div class="p-6 bg-white border-b border-gray-200" style="background-color:rgb(197, 197, 197)">
                             <form wire:submit.prevent="sendMessage">
