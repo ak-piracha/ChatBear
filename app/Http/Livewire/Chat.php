@@ -42,7 +42,7 @@ class Chat extends Component
 
     public function sendMessage()
     {
-        if(!(is_null($this->message_text))){
+        if(!(is_null($this->message_text))){      
         Message::create([
             'room_id' => $this->chat_room->id,
             'user_id' => $this->first_user->id,
