@@ -9,8 +9,6 @@ use Livewire\Component;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
 
-use function PHPUnit\Framework\isNull;
-
 class Chat extends Component
 {
     public $first_user;
@@ -42,7 +40,6 @@ class Chat extends Component
 
     public function sendMessage()
     {
-        if(!(is_null($this->message_text))){      
         Message::create([
             'room_id' => $this->chat_room->id,
             'user_id' => $this->first_user->id,
@@ -55,7 +52,6 @@ class Chat extends Component
     
         
         $this->reset('message_text'); 
-            } 
     }
 
     function sendNotification($user, $msg){
