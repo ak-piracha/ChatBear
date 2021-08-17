@@ -15,6 +15,15 @@
 
         <!-- Scripts -->
         <script src="{{ asset('js/app.js') }}" defer></script>
+        <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+            <script>
+                     window.OneSignal = window.OneSignal || [];
+                     OneSignal.push(function() {
+                       OneSignal.init({
+                         appId: "5a50b1f0-8f3c-4a23-8845-569719f996c6",
+                       });
+                    });
+                </script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
