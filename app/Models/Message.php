@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
@@ -25,5 +26,14 @@ class Message extends Model
     public function room()
     {
         return $this->belongsTo(Room::class);
+    }
+
+    public function updateMsgStatus($id)
+    {   
+
+        DB::table('messages')
+        ->where('room_id', '=', $id)
+        ->where('status', '=' , '2')
+        ->update(['status' => 1]);
     }
 }
