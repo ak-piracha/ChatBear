@@ -15,26 +15,33 @@ class ChatLists extends Component
 {
     use WithPagination;
     public $room_name;
+    public $search = "";
+    public $second_user;
+
+    protected $listeners = ['selectedUser'];
 
     public function mount()
     {
-        //$this->rooms = $room->roomsList();
+        
     }
 
     public function render()
     {
         return view('livewire.chat-lists', [
             'rooms' => Room::where('user_b_id', '=', Auth::user()->id)
-            ->orWhere('user_a_id', '=', Auth::user()->id)->paginate(6)
+            ->orWhere('user_a_id', '=', Auth::user()->id)->paginate(6),
+            'users' => User::where('name', $this->search)->get(),
         ]);
+        
+        $this->reset('search'); 
     }
 
     public function addRoom()
-    {
+    {   
         Room::create([
             'name' => $this->room_name,
             'user_a_id' => Auth::user()->id,
-            'user_b_id' => User::find(4)->id,
+            'user_b_id' => $this->second_user->id,
             'type_id' => RoomType::find(1)->id,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
@@ -42,4 +49,11 @@ class ChatLists extends Component
         
         $this->reset('room_name'); 
     }
+
+    public function selectedUser(User $user)
+    {
+        $this->second_user = $user;
+        $this->reset('search'); 
+    }
+    
 }
