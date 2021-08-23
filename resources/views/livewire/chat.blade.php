@@ -1,4 +1,4 @@
-<div wire:poll>
+<div wire:poll.debounce.20000ms>
     
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -13,9 +13,14 @@
                         <div class="p-6 bg-white border-b border-gray-200">
 
                             <label style="color:rgb(25, 25, 95); font-family:verdana" for="user_name">{{ $message->user->name}}</label>  
-
-                            <label style="color:black;" for="user_name">{{ $message->message}}</label>   
-
+                            
+                            @if ($message->status == 2)
+                            <label style="color:rgb(122, 6, 255);" for="user_name">{{ $message->message}} : {{$message->status}}</label>
+                            <label style="color:rgb(6, 255, 139);" for="user_name">new</label>
+                            @else
+                            <label style="color:black;" for="user_name">{{ $message->message}} : {{$message->status}}</label>
+                            @endif
+                            {{-- <label style="color:pink;" for="user_name">{{ $message->message}} : {{$message->status}}</label> --}}
                             <br/>
                         </div>
                         @empty
@@ -26,9 +31,18 @@
                             </div>
                         </div>
                         <div class="p-6 bg-white border-b border-gray-200" style="background-color:rgb(197, 197, 197)">
-                            <form wire:submit.prevent="sendMessage">
+                            <form wire:submit.prevent="sendMessage" entype="multipart/form-data">
                             <input wire:model.defer="message_text" type="text" id="msg_id" name="msg" placeholder="Enter your message here..."  style="width:100%; background-color:white">
                         </form> 
+
+                        <form wire:submit.prevent="save">
+                            <input type="file" wire:model="photo">
+                        
+                            @error('photo') <span class="error">{{ $message }}</span> @enderror
+                        
+                            <button type="submit">Save Photo</button>
+                        </form>
+
                             </div>
                 </div>
             </div>
