@@ -26,4 +26,12 @@ Route::get('/chatlist', function () {
     return view('chatlist');
 })->middleware(['auth'])->name('chatlist');
 
+Route::get('users', [UserController::class, 'index']);
+
+Route::get('status', [UserController::class, 'status']);
+
+Route::get('live', [UserController::class, 'liveStatusPage']);
+
+Route::get('live-status/{id}', [UserController::class, 'liveStatus']);
+
 require __DIR__.'/auth.php';

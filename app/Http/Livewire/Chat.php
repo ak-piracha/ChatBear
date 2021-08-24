@@ -6,9 +6,12 @@ use Carbon\Carbon;
 use App\Models\Room;
 use App\Models\Message;
 use Livewire\Component;
+use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use App\Models\message_statuses;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
-use Livewire\WithPagination;
+
 class Chat extends Component
 {
     public $first_user;
@@ -17,12 +20,16 @@ class Chat extends Component
     public $message_text;
     public $room;
     public $response;
+    public $message_status;
+    public $photo;
 
     use WithPagination;
+    use WithFileUploads;
+    
     public function mount($id)
     {
         $this->room = new Room();
-
+        $this->message_status = message_statuses::find(1);
         $this->chat_room = Room::find($id);
         $this->first_user = Auth::user();
         $this->second_user = $this->room->secondUser($this->chat_room);
@@ -30,11 +37,16 @@ class Chat extends Component
 
     public function render()
     {
+
+        Message::where('room_id', '=', $this->chat_room->id)
+        ->where('user_id', '=', $this->second_user->id)
+        ->update(['status'=> $this->message_status->id]);
+        
         return view('livewire.chat', [
             'messages' => Message::with(relations: 'user')
             ->where('room_id', '=', $this->chat_room->id)
             ->latest()
-            ->paginate(6)
+            ->paginate(6),
         ]);
     }
 
@@ -54,6 +66,15 @@ class Chat extends Component
         
         $this->reset('message_text'); 
             } 
+    }
+
+    public function save()
+    {
+        $this->validate([
+            'photo' => 'image|max:1024', // 1MB Max
+        ]);
+
+        $this->photo->store('photos');
     }
 
     function sendNotification($user, $msg){
