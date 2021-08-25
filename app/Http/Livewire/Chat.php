@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use DateTime;
 use Carbon\Carbon;
 use App\Models\Room;
 use App\Models\Message;
@@ -22,17 +23,22 @@ class Chat extends Component
     public $response;
     public $message_status;
     public $photo;
+    public $date;
+    public $interval;
 
     use WithPagination;
     use WithFileUploads;
     
     public function mount($id)
     {
+        $this->date = Carbon::now();
         $this->room = new Room();
         $this->message_status = message_statuses::find(1);
         $this->chat_room = Room::find($id);
         $this->first_user = Auth::user();
         $this->second_user = $this->room->secondUser($this->chat_room);
+        $this->interval = $this->timeDifference();
+        
     }
 
     public function render()
@@ -48,6 +54,15 @@ class Chat extends Component
             ->latest()
             ->paginate(6),
         ]);
+    }
+
+    public function timeDifference()
+    {
+        $origin = new DateTime($this->second_user->last_seen);
+        $target = new DateTime($this->date);
+        $interval = $origin->diff($target);
+       
+        return  $interval->format("%H:%I:%S");
     }
 
     public function sendMessage()

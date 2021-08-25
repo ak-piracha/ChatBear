@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use function PHPUnit\Framework\isNull;
+use function PHPUnit\Framework\isEmpty;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-use function PHPUnit\Framework\isEmpty;
-use function PHPUnit\Framework\isNull;
 
 class Room extends Model
 {
@@ -46,5 +46,18 @@ class Room extends Model
         $second_user = User::find($second_user);
            
         return $second_user;
+    }
+
+    public function addRoom($room_name,$second_user)
+    {   
+        Room::create([
+            'name' => $room_name,
+            'user_a_id' => Auth::user()->id,
+            'user_b_id' => $second_user->id,
+            'type_id' => RoomType::find(1)->id,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+        
     }
 }
