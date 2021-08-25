@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use DateTime;
 use Carbon\Carbon;
 use App\Models\Room;
 use Livewire\Component;
@@ -30,24 +31,25 @@ class ChatLists extends Component
         return view('livewire.chat-lists', [
             'rooms' => Room::where('user_b_id', '=', Auth::user()->id)
             ->orWhere('user_a_id', '=', Auth::user()->id)->paginate(6),
-            'users' => User::where('name', $this->search)->get(),
+            'users' => User::where('name','like', $this->search . '%' )->get(),
         ]);
         
         $this->reset('search'); 
     }
 
-    public function addRoom()
+    public function addRoom(Room $room)
     {   
-        Room::create([
-            'name' => $this->room_name,
-            'user_a_id' => Auth::user()->id,
-            'user_b_id' => $this->second_user->id,
-            'type_id' => RoomType::find(1)->id,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
-        
+        $room->addRoom($this->room_name,$this->second_user);
         $this->reset('room_name'); 
+    }
+
+    public function timeDifference()
+    {
+        $origin = new DateTime($this->second_user->last_seen);
+        $target = new DateTime($this->date);
+        $interval = $origin->diff($target);
+       
+        return  $interval->format("%H:%I:%S");
     }
 
     public function selectedUser(User $user)
