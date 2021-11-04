@@ -15,9 +15,9 @@
                     <x-nav-link :href="route('chatlist')" :active="request()->routeIs('chatlist')">
                         {{ __('Chat Lists') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('chatroom', ['id' => $id ?? 1])" :active="request()->routeIs('chatroom')">
+                    {{-- <x-nav-link :href="route('chatroom', ['id' => $id ?? 1])" :active="request()->routeIs('chatroom')">
                         {{ __('Chat Room') }}
-                    </x-nav-link>
+                    </x-nav-link> --}}
                 </div>
             </div>
 

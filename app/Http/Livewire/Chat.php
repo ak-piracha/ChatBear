@@ -49,7 +49,7 @@ class Chat extends Component
         ->update(['status'=> $this->message_status->id]);
         
         return view('livewire.chat', [
-            'messages' => Message::with(relations: 'user')
+            'messages' => Message::with('user')
             ->where('room_id', '=', $this->chat_room->id)
             ->latest()
             ->paginate(6),
