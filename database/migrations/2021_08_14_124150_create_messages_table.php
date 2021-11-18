@@ -15,8 +15,8 @@ class CreateMessagesTable extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('from_user_id')->constrained('users');
-            $table->foreignId('to_user_id')->constrained('users');
+            $table->foreignId('from_user_id');
+            $table->foreignId('to_user_id');
             $table->longText('message');
             $table->foreignId('status')->constrained('message_statuses');
             $table->softDeletes();
