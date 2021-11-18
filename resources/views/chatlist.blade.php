@@ -22,12 +22,12 @@
 
             <!-- Page Heading -->
             <header class="bg-white shadow">
-                
+
             </header>
 
             <!-- Page Content -->
             <main>
-                @livewire('chat-lists' )
+                @livewire('chat-lists')
             </main>
         </div>
         @livewireScripts

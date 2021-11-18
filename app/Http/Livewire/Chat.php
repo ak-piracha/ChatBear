@@ -2,68 +2,45 @@
 
 namespace App\Http\Livewire;
 
-use DateTime;
 use Carbon\Carbon;
-use App\Models\Room;
 use App\Models\Message;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\WithFileUploads;
-use App\Models\message_statuses;
-use Illuminate\Foundation\Auth\User;
+use App\Models\MessageStatus;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class Chat extends Component
 {
-    public $first_user;
-    public $second_user;
-    public $chat_room;
+    public $fromUser = auth()->user();
+    public $toUser;
+
     public $message_text;
-    public $room;
     public $response;
-    public $message_status;
-    public $photo;
-    public $date;
-    public $interval;
+    public $messageStatus;
 
     use WithPagination;
-    use WithFileUploads;
 
-    public function mount($id)
+    public function mount($toUserId)
     {
-        $this->date = Carbon::now();
-        $this->room = new Room();
-        $this->message_status = message_statuses::find(1);
-        $this->chat_room = Room::find($id);
-        $this->first_user = Auth::user();
-        $this->second_user = $this->room->secondUser($this->chat_room);
-        $this->interval = $this->timeDifference();
-
+        $this->messageStatus = MessageStatus::where('code', '=', MessageStatus::SEEN)->first();
+        $this->toUser = User::find($toUserId);
     }
 
     public function render()
     {
+        $messages = Message::where('from_user_id', '=', $this->fromUser->id)
+                        ->where('to_user_id', '=', $this->toUser->id);
 
-        Message::where('room_id', '=', $this->chat_room->id)
-        ->where('user_id', '=', $this->second_user->id)
-        ->update(['status'=> $this->message_status->id]);
+        $messages->update([
+            'status'=> $this->messageStatus->id
+        ]);
 
         return view('livewire.chat', [
-            'messages' => Message::with('user')
-            ->where('room_id', '=', $this->chat_room->id)
-            ->latest()
-            ->paginate(6),
+            'messages' => $messages->latest()->paginate(1),
         ]);
     }
 
-    public function timeDifference()
-    {
-        $origin = new DateTime($this->second_user->last_seen);
-        $target = new DateTime($this->date);
-        $interval = $origin->diff($target);
-
-        return  $interval->format("%H:%I:%S");
-    }
 
     public function sendMessage()
     {

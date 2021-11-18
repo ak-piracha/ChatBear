@@ -18,7 +18,7 @@ class CreateMessagesTable extends Migration
             $table->foreignId('from_user_id');
             $table->foreignId('to_user_id');
             $table->longText('message');
-            $table->foreignId('status')->constrained('message_statuses');
+            $table->foreignId('message_status_id')->constrained('message_statuses');
             $table->softDeletes();
             $table->timestamps();
         });

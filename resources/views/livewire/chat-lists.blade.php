@@ -1,40 +1,53 @@
-<div class="py-12">
-   <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <input wire:model="search" type="text" placeholder="Search users..." style="width:100%; background-color:white"/>
-                            <ul>
-                                @foreach($users as $user)
-                                
-                                {{-- <div class="p-6 bg-white border-b border-gray-200"> --}}
-                                <button wire:click="selectedUser({{$user->id}})" style="width:100%; background-color:rgb(197, 197, 197)">
-                                    
-                                <li>{{ $user->name }}</li>
-                                </button>
-                                
-                                @endforeach
-                            </ul>
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
-                    
-                <div class="p-6 bg-white border-b border-gray-200" style="background-color:rgb(197, 197, 197)">
-                    <form wire:submit.prevent="addRoom">
-                        <input wire:model.defer="room_name" type="text" id="room_id" name="room" placeholder="Enter your room name here..."  style="width:100%; background-color:white">
-                    </form> 
-                        </div>
-                        @forelse( $rooms as $room)
-                        <div class="p-6 bg-white border-b border-gray-200">
-                            <a href="/chatroom/{{ $room->id}}">{{ $room->name}} </a> 
-                            <br/>
-                        </div>
-                        @empty
-                        No Conversations
-                        @endforelse 
-                    
-                        
-                        <div class="p-6 bg-white border-b border-gray-200">
-                            {{ $rooms->links() }}
-                            </div>
-                
+@if ((config('constants.chat.realtime') ?? false) == true)
+    <div wire:poll>
+@endif
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+
+                <div class="md:flex">
+                    <div class="w-full p-4">
+                        <ul>
+                            @forelse($chattedWith ?? [] as $user)
+                                <li class="flex justify-between items-center bg-white mt-2 p-2 hover:shadow-lg rounded cursor-pointer transition">
+                                    <div class="flex ml-2">
+                                        <div class="flex flex-col ml-2">
+                                            <span class="font-medium text-black">{{ $user->name }}</span>
+                                            <span class="text-sm text-gray-400 truncate w-32">
+                                                {{ $user->message }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <span class="text-gray-300">{{ $user->last_message_at }}</span>
+
+                                        <span class="{{ ($user->last_message_status == \App\Models\MessageStatus::SEEN) ? 'text-green-400' : 'text-gray-400' }} ">
+                                            {{ $user->last_message_status }}
+                                        </span>
+
+                                    </div>
+                                </li>
+                                <hr>
+                            @empty
+                                <li class="flex justify-between items-center bg-white mt-2 p-2 hover:shadow-lg rounded cursor-pointer transition">
+                                    <div class="flex ml-2">
+                                        <div class="flex flex-col ml-2">
+                                            <span class="font-medium text-black">NO CHAT FOUND YET</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endforelse
+                        </ul>
+                    </div>
+                </div>
+                <div class="p-6 bg-white border-b border-gray-200">
+                    {{ $chattedWith->links() }}
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+@if ((config('constants.chat.realtime') ?? false) == true)
+    </div>
+@endif

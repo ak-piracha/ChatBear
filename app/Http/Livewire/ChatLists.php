@@ -2,60 +2,58 @@
 
 namespace App\Http\Livewire;
 
-use DateTime;
-use Carbon\Carbon;
-use App\Models\Room;
 use Livewire\Component;
-use App\Models\RoomType;
-use Hamcrest\Core\IsNot;
-use Livewire\WithPagination;    
+use Livewire\WithPagination;
 use Illuminate\Foundation\Auth\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ChatLists extends Component
 {
     use WithPagination;
-    public $room_name;
-    public $search = "";
-    public $second_user;
-
-    protected $listeners = ['selectedUser'];
 
     public function mount()
     {
-        
+
     }
 
     public function render()
     {
-        return view('livewire.chat-lists', [
-            'rooms' => Room::where('user_b_id', '=', Auth::user()->id)
-            ->orWhere('user_a_id', '=', Auth::user()->id)->paginate(6),
-            'users' => User::where('name','like', $this->search . '%' )->get(),
+        $chattedWithUsers = User::addSelect([
+                'users.*',
+                'latest_messages.message',
+                'latest_messages.last_message_at',
+                'latest_messages.last_message_status',
+            ])
+            ->join(DB::raw("(
+                    SELECT
+                        MAX(message) as message,
+                        MAX(created_at) as last_message_at,
+                        to_user_id,
+                        from_user_id,
+                        message_status_id,
+                        (SELECT code FROM message_statuses WHERE id = MAX(messages.message_status_id)) as last_message_status
+
+                    FROM messages
+
+                    WHERE messages.from_user_id = ".auth()->id()."
+
+                    GROUP BY to_user_id
+                )
+
+                as latest_messages"), function($join) {
+                $join->on("latest_messages.to_user_id", "=", "users.id")
+                    ->where('latest_messages.from_user_id', '=', auth()->id());
+            })
+            ->where('latest_messages.from_user_id', '=', auth()->id())
+            ->groupBy('latest_messages.to_user_id')
+            ->latest('latest_messages.last_message_at', 'DESC')
+            ->paginate(10);
+
+
+        return view('livewire.chat-lists')->with([
+            'chattedWith' => $chattedWithUsers,
         ]);
-        
-        $this->reset('search'); 
     }
 
-    public function addRoom(Room $room)
-    {   
-        $room->addRoom($this->room_name,$this->second_user);
-        $this->reset('room_name'); 
-    }
-
-    public function timeDifference()
-    {
-        $origin = new DateTime($this->second_user->last_seen);
-        $target = new DateTime($this->date);
-        $interval = $origin->diff($target);
-       
-        return  $interval->format("%H:%I:%S");
-    }
-
-    public function selectedUser(User $user)
-    {
-        $this->second_user = $user;
-        $this->reset('search'); 
-    }
-    
 }
