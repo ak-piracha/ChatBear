@@ -1,4 +1,6 @@
-<div wire:poll>
+@if ((config('constants.chat.realtime') ?? false) == true)
+    <div wire:poll>
+@endif
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -49,4 +51,7 @@
             </div>
         </div>
     </div>
-</div>
+
+@if ((config('constants.chat.realtime') ?? false) == true)
+    </div>
+@endif

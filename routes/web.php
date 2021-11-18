@@ -18,11 +18,11 @@ Route::get('/', function () {
 });
 
 Route::get('/chatroom/{id}', function ($id) {
-    
+
     return view('chatroom')->with(['id' => $id]);
 })->middleware(['auth'])->name('chatroom');
 
-Route::get('/chatlist', function () {
+Route::get('/messages', function () {
     return view('chatlist');
 })->middleware(['auth'])->name('chatlist');
 
