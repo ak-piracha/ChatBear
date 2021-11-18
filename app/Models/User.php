@@ -41,13 +41,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function messages()
+
+    public function sent_messages()
     {
-        return $this->hasMany(Message::class);
+        return $this->hasMany(Message::class, 'from_user_id');
     }
 
-    public function room()
+    public function received_messages()
     {
-        return $this->hasMany(Room::class);
+        return $this->hasMany(Message::class, 'to_user_id');
     }
+
 }

@@ -2,38 +2,39 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Message extends Model
 {
-    protected $dates = [ 'created_at', 'updated_at'];
+    use SoftDeletes;
+
     protected $fillable = [
-        'room_id',
-        'user_id',
+        'to_user_id',
+        'from_user_id',
         'message',
-        ];
+        'message_status_id',
+    ];
+
+    protected $dates = [
+        'deleted_at',
+        'created_at',
+        'updated_at',
+    ];
+
 
     /**
      * A message belong to a user
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function sender()
     {
-        return $this->belongsTo(User::class);
-    }
-    public function room()
-    {
-        return $this->belongsTo(Room::class);
+        return $this->belongsTo(User::class, 'from_user_id');
     }
 
-    public function updateMsgStatus($id)
-    {   
-
-        DB::table('messages')
-        ->where('room_id', '=', $id)
-        ->where('status', '=' , '2')
-        ->update(['status' => 1]);
+    public function receiver()
+    {
+        return $this->belongsTo(User::class, 'from_user_id');
     }
 }

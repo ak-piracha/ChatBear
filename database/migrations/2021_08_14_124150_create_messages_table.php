@@ -14,14 +14,13 @@ class CreateMessagesTable extends Migration
     public function up()
     {
         Schema::create('messages', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('room_id',false,true);
-            $table->integer('user_id',false,true);
-            $table->string('message');
+            $table->bigIncrements('id');
+            $table->foreignId('from_user_id')->constrained('users');
+            $table->foreignId('to_user_id')->constrained('users');
+            $table->longText('message');
+            $table->foreignId('status')->constrained('message_statuses');
+            $table->softDeletes();
             $table->timestamps();
-
-            $table->foreign('room_id')->references('id')->on('rooms');
-            $table->foreign('user_id')->references('id')->on('users');       
         });
     }
 
